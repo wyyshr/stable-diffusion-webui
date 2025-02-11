@@ -26,11 +26,24 @@ def create_api(app):
 def api_only():
     from fastapi import FastAPI
     from modules.shared_cmd_options import cmd_opts
+    from fastapi.middleware.cors import CORSMiddleware
 
     initialize.initialize()
 
     app = FastAPI()
     initialize_util.setup_middleware(app)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[
+            "http://localhost",
+            "http://localhost:5173",
+            "https://cube-moyu.netlify.app",
+            "https://sd-img.19991216.xyz"
+        ],  # 或者指定特定的域名，例如 ["https://example.com"]
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"],
+        allow_headers=["*"],
+    )
     api = create_api(app)
 
     from modules import script_callbacks

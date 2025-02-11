@@ -15,6 +15,7 @@ from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from secrets import compare_digest
+from fastapi.middleware.cors import CORSMiddleware
 
 import modules.shared as shared
 from modules import sd_samplers, deepbooru, sd_hijack, images, scripts, ui, postprocessing, errors, restart, shared_items, script_callbacks, infotext_utils, sd_models, sd_schedulers
@@ -208,6 +209,18 @@ class Api:
         self.app = app
         self.queue_lock = queue_lock
         api_middleware(self.app)
+        self.app.add_middleware(
+            CORSMiddleware,
+            allow_origins=[
+                "http://localhost",
+                "http://localhost:5173",
+                "https://cube-moyu.netlify.app",
+                "https://sd-img.19991216.xyz"
+            ],  # 或者指定特定的域名，例如 ["https://example.com"]
+            allow_credentials=True,
+            allow_methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"],
+            allow_headers=["*"],
+        )
         self.add_api_route("/sdapi/v1/txt2img", self.text2imgapi, methods=["POST"], response_model=models.TextToImageResponse)
         self.add_api_route("/sdapi/v1/img2img", self.img2imgapi, methods=["POST"], response_model=models.ImageToImageResponse)
         self.add_api_route("/sdapi/v1/extra-single-image", self.extras_single_image_api, methods=["POST"], response_model=models.ExtrasSingleImageResponse)
