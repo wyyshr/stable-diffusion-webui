@@ -214,6 +214,7 @@ class Api:
             allow_origins=[
                 "http://localhost",
                 "http://localhost:5173",
+                "http://localhost:5501",
                 "https://cube-moyu.netlify.app",
                 "https://sd-img.19991216.xyz"
             ],  # 或者指定特定的域名，例如 ["https://example.com"]
